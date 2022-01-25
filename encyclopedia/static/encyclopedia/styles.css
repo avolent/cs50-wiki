@@ -36,3 +36,11 @@ textarea {
 .sidebar h2 {
     margin-top: 5px;
 }
+
+#error {
+    font-size: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 50px;
+}
