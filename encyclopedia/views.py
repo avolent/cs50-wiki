@@ -23,3 +23,7 @@ def entry(request, entry):
         "entry": entry,
         "html": html
         })
+
+def search(request):
+    print(request)
+    return HttpResponse("test")
