@@ -3,6 +3,7 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse
 
+
 import markdown2
 from . import util
 
@@ -39,7 +40,13 @@ def search(request):
                 searchlist.append(entry)
                 print(searchlist)
                 continue
-        return HttpResponse(f"{searchlist}")
+        return render(request, "encyclopedia/search.html", {
+            "query": q,
+            "searchlist": searchlist,
+        })
     else:
-        # Return to index
+        # Return to index (Good fail safe)
         return HttpResponseRedirect(reverse("views:index"))
+
+def create(request):
+    return render(request, "encyclopedia/create.html")
