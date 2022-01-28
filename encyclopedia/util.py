@@ -40,7 +40,7 @@ def create_entry(title, content):
     """
     Creates an entry file based on the title and content input into the function
     """
-    if os.path.isfile('filename.txt'):
+    if os.path.isfile(f"entries/{title}.md"):
         return "File already exists!"
     try:
         f = open(f"entries/{title}.md", "w")
@@ -49,3 +49,16 @@ def create_entry(title, content):
         return title
     except FileNotFoundError:
         return "File not found!"
+
+def edit_entry(title, content):
+    """
+    Edits an entry file based on the title and content input into the function
+    """
+    if os.path.isfile(f"entries/{title}.md"):
+        try:
+            f = open(f"entries/{title}.md", "w")
+            f.write(content)
+            f.close()
+            return title
+        except FileNotFoundError:
+            return "File not found!"

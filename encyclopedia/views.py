@@ -66,3 +66,19 @@ def create(request):
     else:
         return render(request, "encyclopedia/create.html")
 
+def edit(request, entry):
+    if request.method == "POST":
+        title = util.edit_entry(request.POST["title"], request.POST["content"])
+        if title == "File not found!":
+             return render(request, "encyclopedia/error.html", {
+            "error": "Error!",
+            "html": f"Error! {title}"
+            })        
+        else:
+            return HttpResponseRedirect(f"/wiki/{request.POST['title']}")
+    else:
+        content = util.get_entry(entry)
+        return render(request, "encyclopedia/edit.html", {
+        "entry": entry,
+        "content": content
+        })
