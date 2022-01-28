@@ -3,9 +3,9 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse
 
-
 import markdown2
 from . import util
+
 
 
 def index(request):
@@ -49,4 +49,20 @@ def search(request):
         return HttpResponseRedirect(reverse("views:index"))
 
 def create(request):
-    return render(request, "encyclopedia/create.html")
+    if request.method == "POST":
+        title = util.create_entry(request.POST["title"], request.POST["content"])
+        if title == "File not found!":
+             return render(request, "encyclopedia/error.html", {
+            "error": "Error!",
+            "html": f"Error! {title}"
+            })
+        elif title == "File already exists!":
+            return render(request, "encyclopedia/error.html", {
+            "error": "Error!",
+            "html": f"Error! {title}"
+            })          
+        else:
+            return HttpResponseRedirect(f"wiki/{request.POST['title']}")
+    else:
+        return render(request, "encyclopedia/create.html")
+
