@@ -50,6 +50,11 @@ def search(request):
 
 def create(request):
     if request.method == "POST":
+        if "/" in request.POST["title"]:
+            return render(request, "encyclopedia/error.html", {
+            "error": "Error!",
+            "html": f"Error! '/' not allowed in title."
+            })             
         title = util.get_entry(request.POST["title"])
         if title == None:
             title = util.save_entry(request.POST["title"], request.POST["content"])
