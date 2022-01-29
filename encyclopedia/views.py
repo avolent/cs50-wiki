@@ -2,7 +2,7 @@ from logging import PlaceHolder
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse
-
+import random as random2
 import markdown2
 from . import util
 
@@ -50,31 +50,29 @@ def search(request):
 
 def create(request):
     if request.method == "POST":
-        title = util.create_entry(request.POST["title"], request.POST["content"])
-        if title == "File not found!":
-             return render(request, "encyclopedia/error.html", {
-            "error": "Error!",
-            "html": f"Error! {title}"
-            })
-        elif title == "File already exists!":
+        title = util.get_entry(request.POST["title"])
+        if title == None:
+            title = util.save_entry(request.POST["title"], request.POST["content"])
+            return HttpResponseRedirect(f"wiki/{request.POST['title']}")
+        else:
             return render(request, "encyclopedia/error.html", {
             "error": "Error!",
-            "html": f"Error! {title}"
+            "html": f"Error! Page already exists."
             })          
-        else:
-            return HttpResponseRedirect(f"wiki/{request.POST['title']}")
+            
     else:
         return render(request, "encyclopedia/create.html")
 
 def edit(request, entry):
     if request.method == "POST":
-        title = util.edit_entry(request.POST["title"], request.POST["content"])
-        if title == "File not found!":
+        title = util.get_entry(request.POST["title"])
+        if title == None:
              return render(request, "encyclopedia/error.html", {
             "error": "Error!",
-            "html": f"Error! {title}"
+            "html": f"Error! Page doesn't exist."
             })        
         else:
+            title = util.save_entry(request.POST["title"], request.POST["content"])
             return HttpResponseRedirect(f"/wiki/{request.POST['title']}")
     else:
         content = util.get_entry(entry)
@@ -82,3 +80,7 @@ def edit(request, entry):
         "entry": entry,
         "content": content
         })
+
+def random(request):
+    entries = util.list_entries()
+    return HttpResponseRedirect(f"wiki/{random2.choice(entries)}")
